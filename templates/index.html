@@ -42,7 +42,7 @@
     <div class="w-full h-full flex flex-col justify-between p-4 rounded-3xl glass-effect pointer-events-auto">
 
       <!-- Panel içeriği (scroll edilebilir) -->
-      <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
+      <div class="flex-1 overflow-y-auto custom-scrollbar px-3">
 
         <!-- Başlık ve bağlantı durumu -->
         <div class="flex items-center justify-between mb-4">
@@ -69,6 +69,21 @@
               <i class="ri-arrow-down-s-line"></i>
             </button>
             <div id="droneDropdown" class="absolute top-full left-0 w-full bg-[#0b0d0f] rounded-md shadow-md mt-2 hidden z-60 border border-[#27292b] max-h-52 overflow-y-auto"></div>
+          </div>
+        </section>
+
+        <!-- Drone görevi seçimi -->
+        <section class="mb-6">
+          <label class="text-xs text-white/60">Görev Seçimi</label>
+          <div class="mt-2 relative">
+            <button id="missionSelector" class="w-full bg-[#0f1316] p-2 rounded-md flex items-center justify-between text-sm hover:bg-[#16181b]">
+              <span id="selectedMissionText">Görev Seçin</span>
+              <i class="ri-arrow-down-s-line"></i>
+            </button>
+            <div id="missionDropdown" class="absolute top-full left-0 w-full bg-[#0b0d0f] rounded-md shadow-md mt-2 hidden z-60 border border-[#27292b] max-h-52 overflow-y-auto">
+              <div data-value="fire" class="cursor-pointer px-3 py-2 hover:bg-[#16181b] text-sm">Yangın Tespiti</div>
+              <div data-value="human" class="cursor-pointer px-3 py-2 hover:bg-[#16181b] text-sm">İnsan Tespiti</div>
+            </div>
           </div>
         </section>
 
@@ -121,12 +136,17 @@
 
       </div>
 
+      <div id="detectionInfo" class="mt-4 p-2 rounded-md bg-red-700 hidden text-center text-sm font-medium text-white">
+        Tespit Edildi:
+      </div>
+
       <!-- Görev durumu metni -->
-      <div class="mt-4 text-xs text-white/60">
+      <div id="missionStatusBox" class="mt-4 text-xs text-white/60">
         <div id="missionStatusText">Görev: Beklemede</div>
       </div>
     </div>
   </div>
+      <div class="mt-4 text-xs text-white/60">
 
   <!-- Kamera görüntü paneli -->
   <div id="cameraOverlay" class="camera-overlay glass-effect shadow-lg">
@@ -139,12 +159,11 @@
         </button>
       </div>
     </div>
-    <!-- Canlı kamera görüntüsü -->
-    <div style="height:220px;background:#000;">
-      <img id="cameraFeed" src="" alt="camera feed" style="width:100%;height:100%;object-fit:cover"/>
+
+    <div style="height:220px;background:#3a3a3a;"> <!-- koyu gri -->
+      <img id="cameraFeed" src="/static/images/logo.png" alt="camera feed" style="width:100%;height:100%;object-fit:cover"/>
     </div>
   </div>
-
   <!-- Bildirim alanı (toast) -->
   <div id="toastContainer"></div>
 

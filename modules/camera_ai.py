@@ -1,6 +1,5 @@
 # modules/camera_ai.py
 
-
 import cv2
 import numpy as np
 import rospy
@@ -9,6 +8,8 @@ import time
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from config import CAMERA_TOPICS
+from .fire_detector import FireDetector
+# from .human_detector import HumanDetector # İnsan detektörünü ekledikten sonra bu satırı aktif edin
 
 LOG_THROTTLE_SEC = 0.5  # Logların çok sık yazılmasını önlemek için zaman aralığı
 
@@ -21,6 +22,43 @@ class CameraAIHandler:
         self.is_ros_node_initialized = False
         self.subscribed_ports = set()       # Abone olunan portlar
         self.last_log_time = {}             # Portlara ait son log zamanı
+        
+        # Yeni: Son tespit sonuçlarını saklamak için değişken
+        self.latest_detection_results = []  
+        self.detection_lock = threading.Lock() # Tespit sonuçlarına güvenli erişim için
+
+        # --- YOLO Entegrasyonu için Yeni Kod Başlangıcı ---
+        self.active_detector = None
+        self.detectors = {}  # Detektör nesnelerini burada saklayacağız
+
+        # Modelleri sadece bir kez yükle
+        try:
+            self.detectors['fire'] = FireDetector()
+            # self.detectors['human'] = HumanDetector() # İnsan detektörünü ekledikten sonra bu satırı aktif edin
+            print("[YOLO] Tüm algılama modelleri başarıyla yüklendi.")
+        except Exception as e:
+            print(f"[YOLO] Algılama modeli yüklenirken hata: {e}")
+            self.detectors = {} # Hata durumunda boşalt
+        # --- YOLO Entegrasyonu için Yeni Kod Sonu ---
+
+    # Yeni eklenen fonksiyon
+    def get_latest_detection_results(self):
+        """
+        En son tespit sonuçlarını döndürür.
+        """
+        with self.detection_lock:
+            return self.latest_detection_results
+
+    # Yeni eklenen fonksiyon
+    def set_mission_type(self, mission_type):
+        """Görev tipine göre aktif detektörü ayarlar."""
+        self.active_detector = self.detectors.get(mission_type)
+        if self.active_detector:
+            print(f"[YOLO] Aktif detektör: {mission_type}")
+            return True
+        else:
+            print(f"[YOLO] '{mission_type}' için detektör bulunamadı!")
+            return False
 
     def init_ros_node(self):
         # ROS düğümünü başlatır
@@ -69,6 +107,34 @@ class CameraAIHandler:
         except Exception as e:
             print(f"[ROS Kamera] Image->CV çevirme hatası: {e}")
             return
+
+        # YOLO Entegrasyonu için Yeni Kod Başlangıcı
+        if self.active_detector:
+            try:
+                detection_results = self.active_detector.detect(cv_image)
+                
+                # Tespit sonuçlarını class değişkenine kaydet
+                with self.detection_lock:
+                    self.latest_detection_results = detection_results
+                
+                # Yeni DEBUG çıktısı
+                #if not detection_results:
+                #    print(f"[YOLO DEBUG] Port {port} için tespit sonucu boş. Yangın bulunamadı veya eşik altında kaldı.")
+                
+                if detection_results:
+                    #print(f"[YOLO] Port {port} - Tespit edildi: {detection_results}")
+                    # Tespit edilen nesnelerin etrafına kutu çizme
+                    for result in detection_results:
+                        box = result['box']
+                        score = result['score']
+                        class_name = result['class_name']
+                        x1, y1, x2, y2 = box.astype(int)
+                        cv2.rectangle(cv_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        label = f"{class_name}: {score:.2f}"
+                        cv2.putText(cv_image, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            except Exception as e:
+                print(f"[YOLO] Algılama işlemi sırasında hata: {e}")
+        # --- YOLO Entegrasyonu için Yeni Kod Sonu ---
 
         try:
             ret, buf = cv2.imencode('.jpg', cv_image, [int(cv2.IMWRITE_JPEG_QUALITY), 80])

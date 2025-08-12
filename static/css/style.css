@@ -43,6 +43,25 @@ body {
   box-shadow: 0 0 6px rgba(255, 59, 48, 0.3);
 }
 
+/* durum bildirimleri*/
+#toastContainer {
+    position: fixed;
+    top: 10rem;
+    right: 10rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toast {
+    font-size: 1.125rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: white;
+    background-color: rgba(0,0,0,0.8);
+}
+
 /* drone harita simgesi */
 .drone-marker {
   background: #007aff;
@@ -58,8 +77,8 @@ body {
   width: 360px;
   border-radius: 10px;
   overflow: hidden;
-  right: 18px;
-  bottom: 80px;
+  right: 10px;
+  bottom: 10px;
   background: #000;
   z-index: 1050;
 }

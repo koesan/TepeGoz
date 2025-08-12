@@ -10,7 +10,7 @@ from .camera_ai import CameraAIHandler
 
 class DroneManager:
     
-        def __init__(self):
+    def __init__(self):
         self.drones = {}                                        # Bağlı dronlar: port -> vehicle objesi
         self.active_drone = None                                # Şu an kontrol edilen dron
         self.active_drone_port = None                           # Aktif dronun port numarası

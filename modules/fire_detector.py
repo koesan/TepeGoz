@@ -1,66 +1,141 @@
-# modules/fire_detector.py
-# ONNX tabanlı yangın/duman tespit modülü.
+import numpy as np
+import cv2
+from typing import Optional, List, Tuple
+
+# Ultralytics kütüphanesini içe aktarıyoruz
+from ultralytics import YOLO
+
+# config.py dosyasından model yolunu alıyoruz
+from config import FOREST_FIRE_DETECTION_MODEL
+
+class FireDetector:
+    """YOLOv8 tabanlı ultralytics modeli kullanarak yangın ve duman tespiti yapar."""
+
+    def __init__(
+        self,
+        conf_threshold: float = 0.1,
+        iou_threshold: float = 0.45,
+    ):
+        """
+        Modeli yükler ve yapılandırma parametrelerini ayarlar.
+        ultralytics kütüphanesi kendi içinde ön-işleme ve son-işleme yaptığı için 
+        bu fonksiyon daha basittir.
+        """
+        self.conf_threshold = conf_threshold
+        self.iou_threshold = iou_threshold
+
+        try:
+            # Model dosyasını ultralytics.YOLO ile yüklüyoruz
+            self.model = YOLO(FOREST_FIRE_DETECTION_MODEL)
+            # Modelin sınıf isimlerini alıyoruz
+            self.class_names = self.model.names
+            print(f"[YOLO] Yangın tespit modeli {FOREST_FIRE_DETECTION_MODEL} başarıyla yüklendi.")
+            print(f"[YOLO] Model sınıfları: {self.class_names}")
+
+        except Exception as e:
+            print(f"[YOLO] Yangın tespit modeli yüklenirken hata: {e}")
+            self.model = None
+
+    def detect(self, frame: np.ndarray) -> list:
+        """Bir frame üzerinde yangın/duman tespiti yapar."""
+        if self.model is None:
+            # Model yüklenememişse boş liste döndür
+            return []
+
+        try:
+            # Ultralytics modelinin predict metodunu çağırarak doğrudan tespit yapıyoruz.
+            # Ön-işleme ve son-işleme adımlarını kendisi halleder.
+            results = self.model.predict(
+                frame,
+                conf=self.conf_threshold,
+                iou=self.iou_threshold,
+                verbose=False # Terminal çıktısını azaltmak için
+            )
+
+            # İlk sonucun (tek bir görüntü olduğu için) verilerini alıyoruz
+            # detection_results'ı, eski yapıyla uyumlu bir liste formatına dönüştürüyoruz
+            detection_results = []
+            if results:
+                r = results[0]  # İlk sonuç nesnesi
+                for box in r.boxes:
+                    # Kutu koordinatlarını, skoru ve sınıfı alıyoruz
+                    x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
+                    score = float(box.conf[0].cpu().numpy())
+                    class_id = int(box.cls[0].cpu().numpy())
+                    class_name = self.class_names[class_id]
+
+                    detection_results.append({
+                        "box": np.array([x1, y1, x2, y2]),
+                        "score": score,
+                        "class_id": class_id,
+                        "class_name": class_name
+                    })
+
+            return detection_results
+            
+        except Exception as e:
+            print(f"[YOLO] 'detect' metodu sırasında hata: {e}")
+            return []
+
+"""
 
 import onnxruntime as ort
 import numpy as np
 import cv2
 from typing import Optional, List, Tuple
+
 from config import FOREST_FIRE_DETECTION_MODEL
 
 class FireDetector:
-    # Modelin giriş boyutu, güven eşikleri ve sınıf isimleri ile başlatılır
+
     def __init__(
         self,
         input_size: Tuple[int, int] = (640, 640),
-        conf_threshold: float = 0.5,
+        conf_threshold: float = 0.1,
         iou_threshold: float = 0.45,
-        class_names: Optional[List[str]] = None,
         providers: Optional[List[str]] = None
     ):
 
         self.input_size = input_size
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
-        self.class_names = class_names if class_names else ["smoke", "fire"]
+        self.class_names = ["smoke", "fire"]
 
         if providers is None:
             providers = ["CPUExecutionProvider"]
+        
+        try:
+            self.session = ort.InferenceSession(FOREST_FIRE_DETECTION_MODEL, providers=providers)
+            self.input_name = self.session.get_inputs()[0].name
+            self.output_names = [o.name for o in self.session.get_outputs()]
+            print(f"[YOLO] Yangın tespit modeli {FOREST_FIRE_DETECTION_MODEL} başarıyla yüklendi.")
+        except Exception as e:
+            print(f"[YOLO] Yangın tespit modeli yüklenirken hata: {e}")
+            self.session = None
 
-        # ONNX modelini yükle
-        self.session = ort.InferenceSession(FOREST_FIRE_DETECTION_MODEL, providers=providers)
-        self.input_name = self.session.get_inputs()[0].name
-        self.output_names = [o.name for o in self.session.get_outputs()]
-
-    # Görüntüyü modele uygun boyuta getirir ve normalize eder
     def _preprocess(self, frame: np.ndarray):
         h0, w0 = frame.shape[:2]
         w_in, h_in = self.input_size
 
-        # Oranı hesapla, görüntüyü modele göre ölçeklendir
         r = min(w_in / w0, h_in / h0)
         new_unpad = (int(round(w0 * r)), int(round(h0 * r)))
 
-        # Padding (kenar boşlukları) ekle
         dw, dh = w_in - new_unpad[0], h_in - new_unpad[1]
         dw /= 2
         dh /= 2
 
-        # Yeniden boyutlandır ve padding uygula
         img = cv2.resize(frame, new_unpad, interpolation=cv2.INTER_LINEAR)
         top, bottom = int(round(dh)), int(round(dh))
         left, right = int(round(dw)), int(round(dw))
         img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=(114, 114, 114))
 
-        # BGR->RGB dönüştür, float32'ye çevir ve normalize et (0-1 arası)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
 
-        # Kanal sırasını (HWC->CHW) değiştir ve batch dimension ekle
         img = np.transpose(img, (2, 0, 1))
         img = np.expand_dims(img, 0)
 
         return img, r, (left, top)
 
-    # Merkez koordinatlı kutuları (x,y,w,h) sol-üst ve sağ-alt köşelere (x1,y1,x2,y2) dönüştürür
     @staticmethod
     def _xywh2xyxy(x):
         y = x.copy()
@@ -70,7 +145,6 @@ class FireDetector:
         y[..., 3] = x[..., 1] + x[..., 3] / 2
         return y
 
-    # Non-Maximum Suppression uygular; benzer kutuları elemek için
     @staticmethod
     def _nms(boxes, scores, iou_thres):
         if boxes.shape[0] == 0:
@@ -94,67 +168,83 @@ class FireDetector:
             order = order[inds + 1]
         return np.array(keep, dtype=np.int32)
 
-    # Model çıktısını filtreler, kutuları normalize eder ve NMS uygular
     def _postprocess(self, preds, ratio, pad):
-        if preds.ndim == 3 and preds.shape[0] == 1:
-            preds = preds[0]
+        print(f"[YOLO DEBUG] Post-işleme başlatıldı. Tahminlerin boyutu: {preds.shape}")
+        
+        # Genellikle (1, 84, N) veya (1, N, 84) formatındadır.
+        if preds.shape[1] < preds.shape[2]:
+            preds = np.transpose(preds, (0, 2, 1))
+            
+        preds = preds[0]  # batch'ten çıkart
 
-        xywh = preds[:, :4]         # Kutular (x,y,w,h)
-        obj_conf = preds[:, 4]      # Nesne güveni
-        class_probs = preds[:, 5:]  # Sınıf olasılıkları
+        xywh = preds[:, :4]       # kutular (x,y,w,h)
+        obj_conf = preds[:, 4]    # nesne güveni
+        class_probs = preds[:, 5:5+len(self.class_names)] # sınıf olasılıkları
 
         class_ids = np.argmax(class_probs, axis=1)
         class_scores = class_probs[np.arange(len(class_probs)), class_ids]
-        final_conf = obj_conf * class_scores  # Toplam güven skoru
+        final_conf = obj_conf * class_scores
 
-        mask = final_conf >= self.conf_threshold  # Güven eşiği filtresi
+        print(f"[YOLO DEBUG] Tespit edilen toplam kutu sayısı (ön-filtreleme): {len(final_conf)}")
+        print(f"[YOLO DEBUG] Maksimum güvenilirlik skoru: {np.max(final_conf) if len(final_conf) > 0 else 0}")
+        print(f"[YOLO DEBUG] Ayarlanan conf_threshold: {self.conf_threshold}")
+
+        mask = final_conf >= self.conf_threshold
         if not np.any(mask):
-            return []
+            print("[YOLO DEBUG] Eşik değerini geçen bir tespit bulunamadı.")
+            return np.array([]), np.array([]), np.array([])
 
-        xyxy = self._xywh2xyxy(xywh[mask])  # (x,y,w,h) -> (x1,y1,x2,y2)
+        xyxy = self._xywh2xyxy(xywh[mask])
         scores = final_conf[mask]
         classes = class_ids[mask]
         left, top = pad
 
-        # Eğer kutular normalize ise tekrar genişlik ve yükseklik ile çarp
         if xyxy.max() <= 1.0:
             w_in, h_in = self.input_size
             xyxy[:, [0, 2]] *= w_in
             xyxy[:, [1, 3]] *= h_in
 
-        # Padding'i çıkar
         xyxy[:, [0, 2]] -= left
         xyxy[:, [1, 3]] -= top
-
-        # Oranı kullanarak orijinal görüntü boyutuna geri dön
         xyxy /= ratio
-
-        detections = []
-
-        # Aynı sınıf için NMS uygula ve sonucu topla
+        
+        final_boxes, final_scores, final_class_ids = [], [], []
         for cls in np.unique(classes):
             idxs = np.where(classes == cls)[0]
             keep = self._nms(xyxy[idxs], scores[idxs], self.iou_threshold)
             for k in keep:
-                detections.append((int(classes[idxs[k]]), float(scores[idxs[k]])))
+                final_boxes.append(xyxy[idxs[k]])
+                final_scores.append(scores[idxs[k]])
+                final_class_ids.append(classes[idxs[k]])
+        
+        print(f"[YOLO DEBUG] NMS sonrası tespit edilen final kutu sayısı: {len(final_boxes)}")
+        return np.array(final_boxes), np.array(final_scores), np.array(final_class_ids)
 
-        return detections
-
-    # Frame'den yangın veya duman tespiti yapar
-    def predict_from_frame(self, frame: np.ndarray) -> Optional[str]:
-        img, ratio, pad = self._preprocess(frame)
-        ort_inputs = {self.input_name: img.astype(np.float32)}
-        preds = self.session.run(self.output_names, ort_inputs)[0]
-        dets = self._postprocess(preds, ratio, pad)
-
-        if not dets:
-            return None
-
-        found_fire = any(self.class_names[cls] == "fire" for cls, _ in dets)
-        found_smoke = any(self.class_names[cls] == "smoke" for cls, _ in dets)
-
-        if found_fire:
-            return "fire"
-        if found_smoke:
-            return "smoke"
-        return None
+    def detect(self, frame: np.ndarray) -> list:
+        print("[YOLO DEBUG] 'detect' metodu çağrıldı.")
+        if self.session is None:
+            print("[YOLO DEBUG] ONNX oturumu başlatılamadığı için tespit yapılamıyor.")
+            return []
+        try:
+            img, ratio, pad = self._preprocess(frame)
+            print(f"[YOLO DEBUG] Ön-işlenmiş görüntü boyutu: {img.shape}")
+            ort_inputs = {self.input_name: img.astype(np.float32)}
+            preds = self.session.run(self.output_names, ort_inputs)[0]
+            
+            boxes, scores, class_ids = self._postprocess(preds, ratio, pad)
+            
+            results = []
+            for i in range(len(boxes)):
+                results.append({
+                    "box": boxes[i],
+                    "score": scores[i],
+                    "class_id": class_ids[i],
+                    "class_name": self.class_names[class_ids[i]]
+                })
+            
+            print(f"[YOLO DEBUG] 'detect' metodundan dönen sonuçlar: {results}")
+            return results
+        except Exception as e:
+            print(f"[YOLO] 'detect' metodu sırasında hata: {e}")
+            return []
+"""

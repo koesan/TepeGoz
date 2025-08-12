@@ -6,7 +6,8 @@ CRITICAL_BATTERY_LEVEL = 30
 MAX_TOUR_COUNT = 1
 SQUARE_SIZE = 20
 DRONE_SPEED = 90
-FOREST_FIRE_DETECTİON_MODEL = "/Models/yolov8n.onnx"
+
+FOREST_FIRE_DETECTION_MODEL = "./models/fire_m.pt"
 # Kamera ve ROS Ayarları
 CAMERA_TOPICS = {
     5763: "/webcam/image_raw",

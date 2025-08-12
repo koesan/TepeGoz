@@ -9,6 +9,7 @@ let currentMissionStatus = "Beklemede";
 let dronePathLayer = null;  // kalıcı iz
 let dronePath = null;
 let plannedPathLayer = null; // geçici rota
+let selectedMissionType = "fire"; // Varsayılan olarak yangın tespiti
 
 /* -------------------------------------------
     Toast helper
@@ -185,6 +186,34 @@ function clearDrawing() {
   showToast("Çizimler temizlendi.", "info");
 }
 
+// Yeni: Tespit sonuçlarını getiren ve görüntüleyen fonksiyon
+async function updateDetectionDisplay() {
+  try {
+    const response = await fetch('/get_detections');
+    const detections = await response.json();
+    const detectionsList = document.getElementById('detectionsList');
+    detectionsList.innerHTML = ''; // Önceki sonuçları temizle
+
+    if (detections && detections.length > 0) {
+      detections.forEach(detection => {
+        const detectionEl = document.createElement('div');
+        detectionEl.className = 'flex items-center justify-between text-xs text-white/60';
+        detectionEl.innerHTML = `
+          <span>${detection.class_name.toUpperCase()}</span>
+          <span class="font-bold">${(detection.score * 100).toFixed(2)}%</span>
+        `;
+        detectionsList.appendChild(detectionEl);
+      });
+    } else {
+      detectionsList.innerHTML = '<div class="text-xs text-white/60">Henüz bir şey tespit edilmedi.</div>';
+    }
+  } catch (error) {
+    console.error('Tespit sonuçları alınırken hata oluştu:', error);
+    const detectionsList = document.getElementById('detectionsList');
+    detectionsList.innerHTML = '<div class="text-xs text-red-400">Veri alınamadı.</div>';
+  }
+}
+
 /* -------------------------------------------
     Backend / API calls (app.py ile uyumlu)
     -------------------------------------------*/
@@ -252,18 +281,47 @@ async function setMissionArea(coords) {
 async function startMission() {
   if (!selectedDronePort) { showToast("Önce dron seçin.", "error"); return; }
   if (drawnItems.getLayers().length === 0) { showToast("Önce görev alanı çizin.", "error"); return; }
+  if (!selectedMissionType) { showToast("Lütfen bir görev seçin.", "error"); return; }
 
-  try {
-    const res = await fetch('/start_mission', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-    const data = await res.json();
-    showToast(data.message || "Görev başlatıldı.", data.status === 'ok' ? 'success' : 'error');
-    if (data.status === 'ok') {
-      missionActive = true;
-      missionStartTs = Date.now();
-      startMissionTimer();
+  if (!missionActive) {
+    try {
+      showToast("Görev başlatılıyor...", "info");
+
+      const res = await fetch('/start_mission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mission_type: selectedMissionType })
+      });
+      const data = await res.json();
+
+      if (data.status === 'ok') {
+        missionActive = true;
+        updateMissionStatus(data.message, 'info');
+        missionStartTs = Date.now();
+        missionInterval = setInterval(updateMissionProgress, 1000);
+      }
+      showToast(data.message, data.status);
       updateButtonStates();
+    } catch (err) {
+      showToast("Görev başlatılamadı: " + err, "error");
     }
-  } catch (err) { showToast("Görev başlatılamadı: " + err, "error"); }
+  }
+}
+
+function updateMissionStatus(message) {
+    document.getElementById('missionStatusText').textContent = message;
+}
+
+
+function updateMissionProgress() {
+    if (!missionActive || !missionStartTs) {
+        clearInterval(missionInterval);
+        return;
+    }
+    const elapsed = Math.floor((Date.now() - missionStartTs) / 1000);
+    const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+    const seconds = (elapsed % 60).toString().padStart(2, '0');
+    document.getElementById('missionTimer').textContent = `${minutes}:${seconds}`;
 }
 
 async function stopMission() {
@@ -346,14 +404,60 @@ async function updateStatus() {
           }
         });
       }
+
+      // Görev durumu ve tespit bilgisi yazısı
+      const missionStatusBox = document.getElementById('missionStatusBox');
+      const missionStatusText = document.getElementById('missionStatusText');
+      const detectionInfoEl = document.getElementById('detectionInfo');
+
+      if (data.is_mission_active) {
+          missionActive = true;
+          missionStatusText.textContent = data.status_message || 'Görev çalışıyor';
+          if (missionStartTs === null) { missionStartTs = Date.now(); }
+      } else {
+          if (missionActive) {
+              missionActive = false;
+              stopMissionTimer();
+              missionStatusText.textContent = data.status_message || 'Görev tamamlandı.';
+          } else {
+              missionStatusText.textContent = data.status_message || 'Beklemede';
+          }
+      }
+
+      // --- Yeni Ekleme: Tespit Bilgisi ---
+      if (data.detection_results && data.detection_results.length > 0) {
+          // Tespit edilen sınıfları alıp benzersiz hale getiriyoruz
+          const detectedClasses = [...new Set(data.detection_results.map(d => d.class_name))];
+          
+          // Tespit edilenleri metin olarak gösteriyoruz
+          detectionInfoEl.textContent = `Tespit Edildi: ${detectedClasses.join(', ')}`;
+          detectionInfoEl.classList.remove('hidden');
+
+          // Kutu rengini kırmızı yapıyoruz
+          detectionInfoEl.classList.remove('bg-gray-700', 'bg-green-700');
+          detectionInfoEl.classList.add('bg-red-700');
+
+          // Tespit devam ettiği sürece zamanlayıcıyı sıfırlıyoruz
+          clearTimeout(detectionTimer);
+          detectionTimer = setTimeout(() => {
+              detectionInfoEl.classList.add('hidden');
+              detectionInfoEl.classList.remove('bg-red-700', 'bg-green-700');
+              detectionInfoEl.classList.add('bg-gray-700');
+          }, 5000); // 5 saniye sonra gizle
+      } else {
+          // Tespit yok → kutuyu gizle
+          detectionInfoEl.classList.add('hidden');
+          detectionInfoEl.classList.remove('bg-red-700', 'bg-green-700');
+          detectionInfoEl.classList.add('bg-gray-700');
+      }
     }
 
-    // Görev durumu yazısı
+    // Görev durumu yazısı (yedek kontrol)
     if (data.is_mission_active) {
-      missionActive = true;
-      document.getElementById('missionStatusText').textContent = data.status_message || 'Görev çalışıyor';
+        missionActive = true;
+        document.getElementById('missionStatusText').textContent = data.status_message || 'Görev çalışıyor';
     } else if (!missionActive) {
-      document.getElementById('missionStatusText').textContent = data.status_message || 'Beklemede';
+        document.getElementById('missionStatusText').textContent = data.status_message || 'Beklemede';
     }
 
   } catch (err) {
@@ -395,6 +499,7 @@ function toggleCamera() {
   const overlay = document.getElementById('cameraOverlay');
   const circ = document.getElementById('cameraToggleCircle');
   const btn = document.getElementById('cameraToggle');
+  const feedImg = document.getElementById('cameraFeed');
 
   if (cameraOn) {
     circ.style.transform = 'translateX(26px)';
@@ -403,9 +508,10 @@ function toggleCamera() {
   } else {
     circ.style.transform = 'translateX(4px)';
     btn.classList.remove('bg-green-600');
-    document.getElementById('cameraFeed').src = '';
+    feedImg.src = '/static/images/logo.png'; // varsayılan resmin yolu
   }
 }
+
 
 function updateCameraFeed() {
   if (!cameraOn) return;
@@ -499,6 +605,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!dd.classList.contains('hidden')) updateDroneList();
   });
   document.getElementById('cameraToggle').addEventListener('click', toggleCamera);
+
+  // Yeni: Görev seçimi açılır menüsü için olay dinleyicisi
+  document.getElementById('missionSelector').addEventListener('click', () => {
+    document.getElementById('missionDropdown').classList.toggle('hidden');
+  });
+
+  document.querySelectorAll('#missionDropdown div').forEach(item => {
+    item.addEventListener('click', function() {
+      selectedMissionType = this.getAttribute('data-value');
+      document.getElementById('selectedMissionText').textContent = this.textContent;
+      document.getElementById('missionDropdown').classList.add('hidden');
+    });
+  });
 
   // periodic status
   setInterval(updateStatus, 2000);

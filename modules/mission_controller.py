@@ -9,7 +9,6 @@ from dronekit import VehicleMode, LocationGlobalRelative
 from pymavlink import mavutil
 from config import TAKEOFF_ALTITUDE, CRITICAL_BATTERY_LEVEL, SQUARE_SIZE, DRONE_SPEED
 
-
 class PID:
     def __init__(self, kp=0.8, ki=0.01, kd=0.08, integral_limit=10.0):
         self.kp = kp
@@ -46,15 +45,10 @@ class MissionController:
     CENTER_CONFIRM_TOLERANCE_M = 1.5     # satır/kolon değişmeden önce kabul edilecek sapma
     CENTER_CONFIRM_HOLD_S = 0.2          # merkez doğrulama için bekleme süresi
     FINE_APPROACH_HOLD_S = 0.5           # merkezde onay için kısa bekleme
-
     PER_CELL_TIMEOUT_S = 60.0            # hücreye ulaşma için başlangıç timeout
     RETRY_LIMIT = 2                      # hücre atlamadan önce tekrar sayısı
-
-    # GPS median filter
-    GPS_MEDIAN_WINDOW = 7                # kaç örnekle medyan al
-
-    # stuck detection
-    STUCK_MOVED_THRESHOLD_M = 0.12
+    GPS_MEDIAN_WINDOW = 7                # GPS median filter (kaç örnekle medyan al)
+    STUCK_MOVED_THRESHOLD_M = 0.12       # stuck detection
     STUCK_TIMEOUT_S = 8.0
 
     def __init__(self, drone_manager):
@@ -67,6 +61,7 @@ class MissionController:
         self.is_mission_active = False
         self.mission_path_points = []
         self._mission_thread = None
+        self.camera_handler = self.drone_manager.camera_handler  # CameraAIHandler'a erişim sağla
 
     # --- yardımcı fonksiyonlar ---
     def _haversine_distance_m(self, lat1, lon1, lat2, lon2):
@@ -125,22 +120,29 @@ class MissionController:
         self.drone_manager.mission_status_message = f"Grid hazır: {num_cols}x{num_rows}, alt-sol'dan başlıyor."
         print(f"Grid oluşturuldu: {num_rows}x{num_cols} (row x col). Alt-sol'dan başlayacak.")
 
+    # boustrophedon (tarla sürme / yılan deseni) tarama
     def _next_indices(self, row, col, horiz_dir, vert_dir):
         next_col = col + horiz_dir
+
+        # Satır içinde ilerleyebiliyorsak
         if 0 <= next_col < self.num_cols and self.centers_2d[row][next_col] is not None:
             return row, next_col, horiz_dir, vert_dir
+
+        # Satır bitti → bir üst/alt satıra geç
         next_row = row + vert_dir
-        if not (0 <= next_row < self.num_rows):
-            vert_dir *= -1
-            next_row = row + vert_dir
-        if 0 <= next_row < self.num_rows and self.centers_2d[next_row][col] is not None:
+        if 0 <= next_row < self.num_rows:
+            horiz_dir *= -1  # yön değiştir
+            return next_row, col, horiz_dir, vert_dir
+
+        # Gridin en üstüne veya en altına ulaştıysak → yönü ters çevirip devam et
+        vert_dir *= -1
+        next_row = row + vert_dir
+        if 0 <= next_row < self.num_rows:
             horiz_dir *= -1
             return next_row, col, horiz_dir, vert_dir
-        for r in range(self.num_rows):
-            for c in range(self.num_cols):
-                if self.centers_2d[r][c] is not None:
-                    return r, c, 1, -1
+
         return row, col, horiz_dir, vert_dir
+
 
     def _get_median_location(self, vehicle, samples_deque):
         if not samples_deque:
@@ -365,13 +367,28 @@ class MissionController:
             time.sleep(0.5)
 
     # start/stop/get_status/set_area
-    def start_mission(self):
+    def start_mission(self, mission_type):
+
         if not self.drone_manager.active_drone:
+            self.drone_manager.mission_status_message = "Aktif dron bulunamadı."
             return {'status': 'error', 'message': 'Lütfen önce bir dron seçin.'}
+
+        if not self.camera_handler.set_mission_type(mission_type):
+            self.drone_manager.mission_status_message = f"Geçersiz görev tipi: {mission_type}"
+            return {"status": "error", "message": f"Geçersiz görev tipi: {mission_type}"}
+
         if self.is_mission_active:
+            self.drone_manager.mission_status_message = "Görev zaten aktif."
+            return {"status": "error", "message": "Görev zaten aktif."}
+
+        if self.is_mission_active:
+            self.drone_manager.mission_status_message = "Görev zaten aktif."
             return {'status': 'error', 'message': 'Görev zaten aktif.'}
+
         if not self.mission_coordinates:
+            self.drone_manager.mission_status_message = "Lütfen önce bir gözlem alanı belirleyin."
             return {'status': 'error', 'message': 'Lütfen önce bir gözlem alanı belirleyin.'}
+
         self._mission_thread = threading.Thread(target=self.run_mission, daemon=True)
         self._mission_thread.start()
         return {'status': 'ok', 'message': 'Görev başlatıldı.'}

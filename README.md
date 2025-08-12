@@ -1,9 +1,3 @@
-Merhaba, projenizin dosyalarını inceledim ve projeniz için istenen özelliklerde profesyonel bir `README.md` dosyası oluşturdum. Proje tanımınıza, amacına, kullanılan teknolojilere ve dosya yapısına göre bir GitHub README'si hazırladım.
-
-İşte projeniz için İngilizce ve Türkçe olarak hazırlanmış `README.md` dosyası:
-
------
-
 # Tepe Göz
 
 \<p align="center"\>

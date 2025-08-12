@@ -1,7 +1,7 @@
 # Tepe Göz
 
 <p align="center">
-  <img src="images/logo5.png" alt="Tepe Göz Logo" width="350" />
+  <img src="images/logo8.png" alt="Tepe Göz Logo" width="350" />
 </p>
 
 ## Continuous Autonomous Surveillance System with Multi-Drone and Ground Station
@@ -93,7 +93,7 @@ tepe_goz/
 
 | Ground Station and Web Interface | Solar Charging Station |
 | :---: |:---:|
-| \<img src="images/web\_site.png" alt="Web Interface" width="400"/\> | \<img src="images/dron\_istansoy.png" alt="Solar Charging Station" width="400"/\> |
+| <img src="images/web\_site.png" alt="Web Interface" width="400"/\> | <img src="images/dron\_istansoy.png" alt="Solar Charging Station" width="400"/\> |
 
 ### Tepe Göz
 
@@ -190,4 +190,4 @@ tepe_goz/
 
 | Yer İstasyonu ve Web Arayüzü | Güneş Enerjili Şarj İstasyonu |
 | :---: |:---:|
-| \<img src="images/web\_site.png" alt="Web Arayüzü" width="400"/\> | \<img src="images/dron\_istansoy.png" alt="Güneş Enerjili Şarj İstasyonu" width="400"/\> |
+| <img src="images/web\_site.png" alt="Web Arayüzü" width="400"/\> | <img src="images/dron\_istansoy.png" alt="Güneş Enerjili Şarj İstasyonu" width="400"/\> |

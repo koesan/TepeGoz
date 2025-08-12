@@ -1,7 +1,7 @@
 # Tepe Göz
 
 <p align="center">
-  <img src="images/logo.png" alt="Tepe Göz Logo" width="500" />
+  <img src="images/logo.png" alt="Tepe Göz Logo" width="350" />
 </p>
 
 ## Continuous Autonomous Surveillance System with Multi-Drone and Ground Station

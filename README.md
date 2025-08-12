@@ -93,7 +93,7 @@ tepe_goz/
 
 | Ground Station and Web Interface | Solar Charging Station |
 | :---: |:---:|
-| <img src="images/web_site.png" alt="Web Interface" width="400"/\> | <img src="images/dron_istansoy.png" alt="Solar Charging Station" width="400"/\> |
+| ![Web Interface](images/web_site.png) | ![Solar Charging Station](images/dron_istansoy.png) |
 
 ### Tepe Göz
 
@@ -190,4 +190,4 @@ tepe_goz/
 
 | Yer İstasyonu ve Web Arayüzü | Güneş Enerjili Şarj İstasyonu |
 | :---: |:---:|
-| <img src="images/web_site.png" alt="Web Arayüzü" width="400"/\> | <img src="images/dron_istansoy.png" alt="Güneş Enerjili Şarj İstasyonu" width="400"/\> |
+| ![Web Arayüzü](images/web_site.png) | ![Güneş Enerjili Şarj İstasyonu](images/dron_istansoy.png) |

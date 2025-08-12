@@ -76,7 +76,7 @@ tepe_goz/
   * **Prerequisites:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
   * Clone the repository:
     ```bash
-    git clone https://github.com/koesan/Tepe_Goz.git
+    git clone https://github.com/koesan/TepeGoz.git
     cd tepe_goz
     ```
   * Install Python dependencies:
@@ -173,7 +173,7 @@ tepe_goz/
   * **Ön Koşullar:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
   * Depoyu klonlayın:
     ```bash
-    git clone https://github.com/koesan/Tepe_Goz.git
+    git clone https://github.com/koesan/TepeGoz.git
     cd tepe_goz
     ```
   * Python bağımlılıklarını kurun:

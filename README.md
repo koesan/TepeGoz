@@ -12,7 +12,7 @@ This project, named "Tepe Göz" (Hill Eye), is a multi-drone continuous surveill
 
 The core of the system is the ability to perform continuous, round-the-clock surveillance. One drone is always in the air, performing a predefined mission (e.g., fire detection, human detection, motion detection), while the other drone is on the ground, charging its battery from the solar-powered station. When the active drone's battery level drops to a critical point, it autonomously returns to the ground station to charge. Simultaneously, the newly charged drone takes off to continue the surveillance mission without any interruption.
 
-This seamless handover mechanism ensures that the monitored area is never left unguarded. The system is equipped with AI-powered detection capabilities to identify specific events or objects (e.g., fires, intruders) and alert the ground station. The ground station then sends notifications to relevant personnel, providing real-time information and camera feeds.
+This seamless handover mechanism ensures that the monitored area is never left unguarded. The system is equipped with AI-powered detection capabilities to identify specific events or objects (e.g., fires, intruders) and alert the ground station. The ground station then sends notifications to relevant personnel.
 
 ### Key Features
 
@@ -76,7 +76,7 @@ tepe_goz/
   * **Prerequisites:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
   * Clone the repository:
     ```bash
-    git clone https://github.com/your-username/tepe_goz.git
+    git clone https://github.com/koesan/Tepe_Goz.git
     cd tepe_goz
     ```
   * Install Python dependencies:
@@ -95,11 +95,11 @@ tepe_goz/
 | :---: |:---:|
 | <img src="images/web_site.png" alt="Web Interface" width="600" height="400"/> | <img src="images/dron_istansoy.png" alt="Solar Charging Station" width="600" height="400"/> |
 
-### Tepe Göz
+### Tepe Göz (TÜRKÇE)
 
-\<p align="center"\>
-\<img src="images/logo5.png" alt="Tepe Göz Logo" width="250" /\>
-\</p\>
+<p align="center">
+  <img src="images/logo.png" alt="Tepe Göz Logo" width="350" />
+</p>
 
 ## Çoklu Drone ve Yer İstasyonlu Kesintisiz Otonom Gözetim Sistemi
 
@@ -109,7 +109,7 @@ tepe_goz/
 
 Sistemin temel amacı, 24 saat kesintisiz gözetim yapma yeteneğidir. Her zaman bir drone havada, önceden tanımlanmış bir görevi (örneğin, yangın tespiti, insan tespiti, hareket tespiti) gerçekleştirirken, diğer drone yerdeki güneş enerjisiyle çalışan istasyonda bataryasını şarj eder. Aktif drone'un batarya seviyesi kritik bir seviyeye düştüğünde, şarj olmak için otonom olarak yer istasyonuna döner. Eş zamanlı olarak, yeni şarj olmuş drone havalanarak gözetim görevine herhangi bir kesinti olmadan devam eder.
 
-Bu sorunsuz görev devir teslim mekanizması, gözlemlenen alanın asla gözetimsiz kalmamasını sağlar. Sistem, yapay zeka destekli tespit yetenekleriyle belirli olayları veya nesneleri (örneğin yangınlar, davetsiz misafirler) tanımlayabilir ve yer istasyonunu uyarabilir. Yer istasyonu da gerçek zamanlı bilgi ve kamera beslemesini ilgili kişilere bildirir.
+Bu sorunsuz görev devir teslim mekanizması, gözlemlenen alanın asla gözetimsiz kalmamasını sağlar. Sistem, yapay zeka destekli tespit yetenekleriyle belirli olayları veya nesneleri (örneğin yangınlar, davetsiz misafirler) tanımlayabilir ve yer istasyonunu uyarabilir. Yer istasyonu da ilgili kişilere bildirir.
 
 ### Ana Özellikler
 
@@ -127,7 +127,7 @@ Bu sorunsuz görev devir teslim mekanizması, gözlemlenen alanın asla gözetim
   * **ROS:** ROS1 Noetic
   * **Programlama Dili:** Python 3.8.10
   * **Drone Kütüphanesi:** `dronekit`
-  * **Bilgisayarlı Görü:** `ultralytics` (YOLOv8)
+  * **Bilgisayarlı Görü:** `ultralytics` (YOLOv11)
   * **Web Sunucusu:** `Flask`
   * **Ön Yüz:** HTML, CSS (TailwindCSS), JavaScript, haritalama için `Leaflet.js`
   * **Gerekli Kütüphaneler:**
@@ -164,7 +164,7 @@ tepe_goz/
 │   └── index.html              # Ana web arayüzü
 ├── models/
 │   └── fire_m.pt               # Yangın tespiti için önceden eğitilmiş YOLOv8 modeli
-├── README.md                   # Bu dosya
+├── README.md                   # Dökümantasyon
 └── ...
 ```
 
@@ -173,7 +173,7 @@ tepe_goz/
   * **Ön Koşullar:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
   * Depoyu klonlayın:
     ```bash
-    git clone https://github.com/your-username/tepe_goz.git
+    git clone https://github.com/koesan/Tepe_Goz.git
     cd tepe_goz
     ```
   * Python bağımlılıklarını kurun:

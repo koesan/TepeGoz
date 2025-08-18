@@ -61,17 +61,21 @@
         </section>
 
         <!-- Drone seçimi dropdown -->
-        <section class="mb-6">
+        <section class="mb-6 relative z-50"> <!-- buraya relative + yüksek z ekledim -->
           <label class="text-xs text-white/60">Dron Seçimi</label>
           <div class="mt-2 relative">
             <button id="droneSelector" class="w-full bg-[#0f1316] p-2 rounded-md flex items-center justify-between text-sm hover:bg-[#16181b]">
               <span id="selectedDroneText">Dron Seçin</span>
               <i class="ri-arrow-down-s-line"></i>
             </button>
-            <div id="droneDropdown" class="absolute top-full left-0 w-full bg-[#0b0d0f] rounded-md shadow-md mt-2 hidden z-60 border border-[#27292b] max-h-52 overflow-y-auto"></div>
+            <div id="droneDropdown" 
+              class="absolute top-full left-0 w-full bg-[#0b0d0f] rounded-md shadow-md mt-2 hidden 
+                     z-[9999] border border-[#27292b] max-h-52 overflow-y-auto">
+              <div class="px-3 py-2 text-sm text-white/60">Bağlı dron yok</div>
+            </div>
           </div>
         </section>
-
+        
         <!-- Drone görevi seçimi -->
         <section class="mb-6">
           <label class="text-xs text-white/60">Görev Seçimi</label>

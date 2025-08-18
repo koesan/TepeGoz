@@ -286,7 +286,6 @@ async function startMission() {
   if (!missionActive) {
     try {
       showToast("Görev başlatılıyor...", "info");
-
       const res = await fetch('/start_mission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -296,9 +295,10 @@ async function startMission() {
 
       if (data.status === 'ok') {
         missionActive = true;
-        updateMissionStatus(data.message, 'info');
+        updateMissionStatus(data.message);
         missionStartTs = Date.now();
-        missionInterval = setInterval(updateMissionProgress, 1000);
+        // Değişiklik: Burada zamanlayıcıyı başlatan fonksiyonu çağırıyoruz
+        startMissionTimer();
       }
       showToast(data.message, data.status);
       updateButtonStates();
@@ -411,17 +411,20 @@ async function updateStatus() {
       const detectionInfoEl = document.getElementById('detectionInfo');
 
       if (data.is_mission_active) {
+        // Görev aktifse ve henüz zamanlayıcı başlatılmadıysa
+        if (!missionActive) {
           missionActive = true;
-          missionStatusText.textContent = data.status_message || 'Görev çalışıyor';
-          if (missionStartTs === null) { missionStartTs = Date.now(); }
+          missionStartTs = Date.now();
+          startMissionTimer();
+        }
+        updateMissionStatus(data.status_message || 'Görev çalışıyor');
       } else {
-          if (missionActive) {
-              missionActive = false;
-              stopMissionTimer();
-              missionStatusText.textContent = data.status_message || 'Görev tamamlandı.';
-          } else {
-              missionStatusText.textContent = data.status_message || 'Beklemede';
-          }
+        // Görev aktif değilse ve zamanlayıcı çalışıyorsa durdur
+        if (missionActive) {
+          missionActive = false;
+          stopMissionTimer();
+        }
+        updateMissionStatus(data.status_message || 'Beklemede');
       }
 
       // --- Yeni Ekleme: Tespit Bilgisi ---
@@ -602,13 +605,17 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('droneSelector').addEventListener('click', () => {
     const dd = document.getElementById('droneDropdown');
     dd.classList.toggle('hidden');
-    if (!dd.classList.contains('hidden')) updateDroneList();
+    if (!dd.classList.contains('hidden') && typeof updateDroneList === "function") {
+      updateDroneList();
+    }
   });
+
   document.getElementById('cameraToggle').addEventListener('click', toggleCamera);
 
   // Yeni: Görev seçimi açılır menüsü için olay dinleyicisi
   document.getElementById('missionSelector').addEventListener('click', () => {
-    document.getElementById('missionDropdown').classList.toggle('hidden');
+    const md = document.getElementById('missionDropdown');
+    md.classList.toggle('hidden');
   });
 
   document.querySelectorAll('#missionDropdown div').forEach(item => {

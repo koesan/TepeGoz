@@ -157,6 +157,9 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 6px;
 }
+#droneDropdown {
+  position: absolute;
+}
 
 /* leaflet rectangle çizim aracı engellenmesin */
 .leaflet-draw-draw-rectangle {

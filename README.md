@@ -30,9 +30,7 @@
 
 ## English
 
-## 🇬🇧
-
-### Overview
+### 🇬🇧 Overview
 
 **“Tepe Göz”** is a multi-drone surveillance system designed to provide **24/7 uninterrupted monitoring** of a designated area. The system combines a ground station, a solar-powered charging unit, and **at least two drones — scalable to more if needed** to ensure continuous operation.
 
@@ -197,8 +195,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## Türkçe
-
-## 🇹🇷
 
 ### 🇹🇷 Genel Bakış  
 

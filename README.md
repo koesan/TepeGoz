@@ -360,12 +360,3 @@ Bu proje MIT Lisansı altında lisanslanmıştır - detaylar için [LICENSE](LIC
 **Barış Enes Kümet**  
 - 📧 E-posta: [barisenesk72@gmail.com](mailto:barisenesk72@gmail.com)
 - 🐙 GitHub: [@koesa](https://github.com/koesan)
-
----
-
-<div align="center">
-
-**Made with ❤️ for autonomous surveillance systems**  
-**❤️ ile otonom gözetim sistemleri için yapıldı**
-
-</div>

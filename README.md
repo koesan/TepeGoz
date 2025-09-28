@@ -10,9 +10,12 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![ROS](https://img.shields.io/badge/ROS-Noetic-22314E?style=flat&logo=ros&logoColor=white)](https://www.ros.org/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-5C3EE8?style=flat&logo=opencv&logoColor=white)](https://opencv.org/)
+[![DroneKit](https://img.shields.io/badge/DroneKit-MAVLink-FF6F00?style=flat&logo=drone&logoColor=white)](https://dronekit-python.readthedocs.io/)
 [![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-00FFFF?style=flat&logo=yolo&logoColor=black)](https://ultralytics.com/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04-E95420?style=flat&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat&logo=opensource&logoColor=white)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/docker/v/username/tepegoz?color=blue&label=Docker)](https://hub.docker.com/r/username/tepegoz)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-red.svg?style=flat&logo=gnu&logoColor=white)](https://www.gnu.org/licenses/agpl-3.0)
 
 <img src="images/logo.png" alt="TepeGöz Logo" width="350" />
 

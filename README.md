@@ -147,9 +147,7 @@ tepe_goz/
 └── ...
 ```
 
-### 🚀 Quick Start
-
-#### Installation
+### 🚀 Installation
 
 ```bash
 # Clone the repository
@@ -296,9 +294,7 @@ tepe_goz/
 └── ...
 ```
 
-### 🚀 Hızlı Başlangıç
-
-#### Kurulum
+### 🚀 Kurulum
 
 ```bash
 # Depoyu klonlayın

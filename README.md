@@ -359,7 +359,7 @@ TepeGoz/
 
 ### 📄 Lisans
 
-Bu proje MIT Lisansı altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
+Bu proje **GNU Affero General Public License v3.0 (AGPLv3)** altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 ### 👨‍💻 Geliştirici
 

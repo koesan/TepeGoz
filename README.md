@@ -1,47 +1,115 @@
-# Tepe Göz
+<div align="center">
 
-<p align="center">
-  <img src="images/logo.png" alt="Tepe Göz Logo" width="350" />
-</p>
+# TepeGöz: Multi-Drone Autonomous Surveillance System
 
-## Continuous Autonomous Surveillance System with Multi-Drone and Ground Station
+**⭐ If you find this project useful, give it a star! / Bu projeyi yararlı buluyorsanız yıldızlayın! ⭐**
 
-This project, named "Tepe Göz" (Hill Eye), is a multi-drone continuous surveillance system designed for 24/7 autonomous monitoring of a designated area. The system combines a ground station, a solar charging unit, and at least two drones to ensure uninterrupted observation.
+[![GitHub stars](https://img.shields.io/github/stars/username/TepeGoz?style=social)](https://github.com/username/TepeGoz)
+[![GitHub forks](https://img.shields.io/github/forks/username/TepeGoz?style=social)](https://github.com/username/TepeGoz/fork)
 
-### Project Overview
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.3+-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![ROS](https://img.shields.io/badge/ROS-Noetic-22314E?style=flat&logo=ros&logoColor=white)](https://www.ros.org/)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-00FFFF?style=flat&logo=yolo&logoColor=black)](https://ultralytics.com/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04-E95420?style=flat&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat&logo=opensource&logoColor=white)](https://opensource.org/licenses/MIT)
 
-The core of the system is the ability to perform continuous, round-the-clock surveillance. One drone is always in the air, performing a predefined mission (e.g., fire detection, human detection, motion detection), while the other drone is on the ground, charging its battery from the solar-powered station. When the active drone's battery level drops to a critical point, it autonomously returns to the ground station to charge. Simultaneously, the newly charged drone takes off to continue the surveillance mission without any interruption.
+<img src="images/logo.png" alt="TepeGöz Logo" width="350" />
 
-This seamless handover mechanism ensures that the monitored area is never left unguarded. The system is equipped with AI-powered detection capabilities to identify specific events or objects (e.g., fires, intruders) and alert the ground station. The ground station then sends notifications to relevant personnel.
+| ![Ground Station Interface](images/web_site.png) | ![Solar Charging Station](images/dron_istansoy.png) |
+|:---:|:---:|
+| **Ground Station & Web Interface** | **Solar Powered Charging Station** |
 
-### Key Features
+---
 
-  * **24/7 Continuous Surveillance:** A multi-drone rotation system ensures a seamless transition between drones, guaranteeing uninterrupted observation.
-  * **Autonomous Operation:** Drones can autonomously take off, follow a mission path, return to the ground station for charging, and land.
-  * **Solar-Powered Charging:** The ground station utilizes a solar panel and a battery unit to provide sustainable, off-grid charging for the drones.
-  * **AI-Powered Detection:** The system uses YOLOv8 models to perform real-time object detection (e.g., fire, human, enemy).
-  * **Ground Station Monitoring:** A web-based interface provides real-time drone status, mission progress, battery levels, and live camera feeds.
-  * **ROS1 Integration:** The entire system is built on ROS1 (Robot Operating System) Noetic, running on Ubuntu 20.04, for robust communication and control.
-  * **User-Friendly Interface:** The Flask-based web server and Leaflet map provide an intuitive interface for mission planning and status monitoring.
+🇬🇧[English](#english) | 🇹🇷[Türkçe](#türkçe)
 
-### Technical Stack
+</div>
 
-  * **Operating System:** Ubuntu 20.04
-  * **ROS:** ROS1 Noetic
-  * **Programming Language:** Python 3.8.10
-  * **Drone Framework:** `dronekit`
-  * **Computer Vision:** `ultralytics` (YOLOv8)
-  * **Web Server:** `Flask`
-  * **Frontend:** HTML, CSS (TailwindCSS), JavaScript, `Leaflet.js` for mapping
-  * **Dependencies:**
-      * `rospy` (from ROS1)
-      * `dronekit`
-      * `flask`
-      * `ultralytics`
-      * `numpy`
-      * `opencv-python`
-      * `Pillow`
-      * `pymavlink`
+---
+
+## English
+
+## 🇬🇧
+
+### Overview
+
+**“Tepe Göz”** is a multi-drone surveillance system designed to provide **24/7 uninterrupted monitoring** of a designated area. The system combines a ground station, a solar-powered charging unit, and **at least two drones — scalable to more if needed** to ensure continuous operation.
+
+### ✨ Key Features
+
+🚁 **24/7 Continuous Operation** - Seamless drone rotation ensures zero downtime  
+🔋 **Solar-Powered Charging** - Sustainable, off-grid energy solution  
+🤖 **AI-Powered Detection** - Real-time fire, human, and motion detection using YOLOv8  
+🗺️ **Autonomous Navigation** - Self-managed takeoff, mission execution, and landing  
+📱 **Web-Based Control** - User-friendly Flask interface with live monitoring  
+
+### 🛠️ How It Works
+
+Its working principle is simple: while at least one drone is always on duty in the air, the other drone(s) recharge at the ground station. When the active drone’s battery reaches a critical level, it autonomously returns to the station, and a fully charged drone immediately takes off to continue the mission **without any interruption**. This seamless handover guarantees that the monitored area is never left unattended.
+
+With its **AI-powered detection capabilities**, the system can identify events such as fires, intrusions, or unusual movements and notify the ground station. The ground station then instantly relays this information to the relevant personnel.
+
+Since the system is powered by solar energy, it operates **independently of any infrastructure**, making it ideal for remote or off-grid areas. It also offers **rapid deployment**, becoming fully operational in about **30 minutes**.
+
+Moreover, thanks to its **modular design**, the communication and sensor setup can be easily adapted to different mission requirements. The drones can be equipped with various cameras — such as standard day cameras, night vision, or thermal imaging — to ensure effective surveillance under diverse conditions.
+
+### 🏗️ System Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                           TepeGöz Surveillance System                          │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│  ┌───────────────┐    ┌──────────────────┐    ┌───────────────┐                │
+│  │  Drone A      │    │   Ground Station │    │  Drone B      │                │
+│  │ (Patrolling)  │◄──►│                  │◄──►│ (Charging)    │                │
+│  │               │    │  ┌─────────────┐ │    │               │                │
+│  │ • YOLOv8 AI   │    │  │Solar Panel  │ │    │ • Standby     │                │
+│  │ • Live Stream │    │  │             │ │    │ • Ready       │                │
+│  │ • GPS Nav     │    │  └─────────────┘ │    │               │                │
+│  └───────┬───────┘    │  ┌─────────────┐ │    └───────┬───────┘                │
+│          │            │  │Web Interface│ │            │                        │
+│          │ Battery Low│  │             │ │            │ Battery Full           │
+│          ▼            │  └─────────────┘ │            ▼                        │
+│  ┌───────┴───────┐    │  ┌─────────────┐ │    ┌───────┴───────┐                │
+│  │ Drone A       │    │  │ROS Core     │ │    │ Drone B       │                │
+│  │ (Returning)   │◄──►│  │             │ │◄──►│ (Taking Off)  │                │
+│  │ • Auto-Landing│    │  └─────────────┘ │    │ • Start Patrol│                │
+│  └───────┬───────┘    └──────────────────┘    └───────┬───────┘                │
+│          │                                            │                        │
+│          │ Landed & Charging                          │ Now Patrolling         │
+│          ▼                                            ▼                        │
+│  ┌───────┴───────┐                            ┌───────┴───────┐                │
+│  │ Drone A       │                            │ Drone B       │                │
+│  │ (Charging)    │                            │ (Patrolling)  │                │
+│  │ • Standby     │                            │ • YOLOv8 AI   │                │
+│  │ • Ready       │                            │ • Live Stream │                │
+│  └───────────────┘                            └───────────────┘                │
+│                                                                                │
+│                           HANDOVER COMPLETE                                    │
+│                                                                                │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │                         CYCLE REPEATS                                   │   │
+│  │  When Drone B battery low → Returns to charge                           │   │
+│  │  Drone A takes over patrol mission                                      │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 💻 Tech Stack
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **OS** | Ubuntu 20.04 | Stable Linux environment |
+| **Framework** | ROS1 Noetic | Robot communication & control |
+| **Language** | Python 3.8+ | Core development |
+| **Drone Control** | DroneKit | MAVLink drone communication |
+| **AI Vision** | YOLOv8 (Ultralytics) | Real-time object detection |
+| **Web Server** | Flask | REST API & web interface |
+| **Frontend** | HTML5, TailwindCSS, Leaflet.js | Interactive mapping UI |
+| **Computer Vision** | OpenCV | Image processing |
 
 ### Project Structure
 
@@ -71,74 +139,145 @@ tepe_goz/
 └── ...
 ```
 
-### Installation and Setup
+### 🚀 Quick Start
 
-  * **Prerequisites:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
-  * Clone the repository:
-    ```bash
-    git clone https://github.com/koesan/TepeGoz.git
-    cd tepe_goz
-    ```
-  * Install Python dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-  * Set up ROS environment and run the ROS core.
-  * Run the main application:
-    ```bash
-    python app.py
-    ```
+#### Installation
 
-### Screenshots
+```bash
+# Clone the repository
+git clone https://github.com/username/TepeGoz.git
+cd TepeGoz
 
-| Ground Station and Web Interface | Solar Charging Station |
-| :---: |:---:|
-| <img src="images/web_site.png" alt="Web Interface" width="600" height="400"/> | <img src="images/dron_istansoy.png" alt="Solar Charging Station" width="600" height="400"/> |
+# Install dependencies
+pip install -r requirements.txt
 
-### Tepe Göz (TÜRKÇE)
 
-<p align="center">
-  <img src="images/logo.png" alt="Tepe Göz Logo" width="350" />
-</p>
+# Launch TepeGöz
+python app.py
+```
 
-## Çoklu Drone ve Yer İstasyonlu Kesintisiz Otonom Gözetim Sistemi
+#### Web Interface
+Open your browser and navigate to `http://localhost:5000` to access the control panel.
 
-"Tepe Göz" adlı bu proje, belirli bir alanın 7/24 kesintisiz otonom gözetimini sağlamak için tasarlanmış çoklu bir drone gözetim sistemidir. Sistem, kesintisiz gözlem sağlamak için bir yer istasyonu, bir güneş enerjisi şarj ünitesi ve en az iki drone'u bir araya getirir.
+### 📂 Project Structure
+```
+TepeGoz/
+├── app.py                    # Main Flask application
+├── config.py                 # System configuration
+├── modules/
+│   ├── camera_ai.py          # AI detection logic
+│   ├── drone_manager.py      # Drone connection & control
+│   ├── fire_detector.py      # Fire detection module
+│   └── mission_controller.py # Mission planning & execution
+├── models/
+│   └── fire_m.pt            # Pre-trained YOLOv8 model
+├── static/                   # Web assets
+├── templates/                # HTML templates
+└── images/                   # Documentation images
+```
 
-### Proje Amacı
+### 🎯 Use Cases
 
-Sistemin temel amacı, 24 saat kesintisiz gözetim yapma yeteneğidir. Her zaman bir drone havada, önceden tanımlanmış bir görevi (örneğin, yangın tespiti, insan tespiti, hareket tespiti) gerçekleştirirken, diğer drone yerdeki güneş enerjisiyle çalışan istasyonda bataryasını şarj eder. Aktif drone'un batarya seviyesi kritik bir seviyeye düştüğünde, şarj olmak için otonom olarak yer istasyonuna döner. Eş zamanlı olarak, yeni şarj olmuş drone havalanarak gözetim görevine herhangi bir kesinti olmadan devam eder.
+- **Forest Fire Monitoring** - Early fire detection and alert systems
+- **Border Security** - Autonomous perimeter surveillance  
+- **Wildlife Conservation** - Non-intrusive animal monitoring
+- **Infrastructure Monitoring** - Pipeline, power line inspection
+- **Emergency Response** - Disaster area assessment and monitoring
 
-Bu sorunsuz görev devir teslim mekanizması, gözlemlenen alanın asla gözetimsiz kalmamasını sağlar. Sistem, yapay zeka destekli tespit yetenekleriyle belirli olayları veya nesneleri (örneğin yangınlar, davetsiz misafirler) tanımlayabilir ve yer istasyonunu uyarabilir. Yer istasyonu da ilgili kişilere bildirir.
+### 📄 License
 
-### Ana Özellikler
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-  * **7/24 Kesintisiz Gözetim:** Çoklu drone rotasyon sistemi, dronelar arasında sorunsuz bir geçiş sağlayarak kesintisiz gözlem garantisi verir.
-  * **Otonom Operasyon:** Dronelar otonom olarak havalanabilir, görev yolunu takip edebilir, şarj olmak için yer istasyonuna dönebilir ve iniş yapabilir.
-  * **Güneş Enerjisiyle Şarj:** Yer istasyonu, dronelar için sürdürülebilir ve şebekeden bağımsız şarj sağlamak üzere bir güneş paneli ve akü ünitesi kullanır.
-  * **Yapay Zeka Destekli Tespit:** Sistem, gerçek zamanlı nesne tespiti (örneğin yangın, insan, düşman) yapmak için YOLOv8 modellerini kullanır.
-  * **Yer İstasyonu İzleme:** Web tabanlı bir arayüz, gerçek zamanlı drone durumu, görev ilerlemesi, batarya seviyeleri ve canlı kamera görüntülerini sunar.
-  * **ROS1 Entegrasyonu:** Tüm sistem, sağlam iletişim ve kontrol için Ubuntu 20.04 üzerinde çalışan ROS1 (Robot İşletim Sistemi) Noetic üzerine kurulmuştur.
-  * **Kullanıcı Dostu Arayüz:** Flask tabanlı web sunucusu ve Leaflet haritası, görev planlaması ve durum izleme için sezgisel bir arayüz sağlar.
+### 👨‍💻 Author
 
-### Teknik Gereksinimler
+**Barış Enes Kümet**  
+- 📧 Email: [barisenesk72@gmail.com](mailto:barisenesk72@gmail.com)
+- 🐙 GitHub: [@koesa](https://github.com/koesa)
 
-  * **İşletim Sistemi:** Ubuntu 20.04
-  * **ROS:** ROS1 Noetic
-  * **Programlama Dili:** Python 3.8.10
-  * **Drone Kütüphanesi:** `dronekit`
-  * **Bilgisayarlı Görü:** `ultralytics` (YOLOv11)
-  * **Web Sunucusu:** `Flask`
-  * **Ön Yüz:** HTML, CSS (TailwindCSS), JavaScript, haritalama için `Leaflet.js`
-  * **Gerekli Kütüphaneler:**
-      * `rospy` (ROS1'den)
-      * `dronekit`
-      * `flask`
-      * `ultralytics`
-      * `numpy`
-      * `opencv-python`
-      * `Pillow`
-      * `pymavlink`
+---
+
+## Türkçe
+
+## 🇹🇷
+
+### 🇹🇷 Genel Bakış  
+
+**“Tepe Göz”**, belirli bir alanın 7/24 kesintisiz şekilde izlenmesini sağlamak için tasarlanmış çoklu dron gözetim sistemidir. Sistem; bir yer istasyonu, güneş enerjisiyle çalışan şarj ünitesi ve **en az iki, gerektiğinde daha fazla dronu** bir araya getirerek kesintisiz gözetim sağlar.
+
+### ✨ Temel Özellikler
+
+🚁 **7/24 Kesintisiz Çalışma** - Sorunsuz drone rotasyonu ile sıfır kesinti süresi  
+🔋 **Güneş Enerjili Şarj** - Sürdürülebilir, şebekeden bağımsız enerji çözümü  
+🤖 **Yapay Zeka Destekli Tespit** - YOLOv8 ile gerçek zamanlı yangın, insan ve hareket tespiti  
+🗺️ **Otonom Navigasyon** - Kendi kendini yöneten kalkış, görev yürütme ve iniş  
+📱 **Web Tabanlı Kontrol** - Canlı izleme ile kullanıcı dostu Flask arayüzü  
+
+### 🛠️ Nasıl Çalışır
+
+Çalışma prensibi basittir: En az bir dron sürekli havada görev yaparken, diğer dron(lar) yer istasyonunda bataryasını şarj eder. Görevdeki dron’un enerjisi azaldığında otomatik olarak istasyona döner ve şarj olmuş bir dron devreye girerek gözetim görevini **hiçbir kesinti olmadan** sürdürür. Böylece gözlemlenen alanın her an kontrol altında tutulması garanti edilir.
+
+Sistem, **yapay zekâ destekli tespit yetenekleri** sayesinde yangın, izinsiz giriş veya olağan dışı hareketleri algılayabilir ve yer istasyonunu uyarır. Yer istasyonu da bu bilgileri anında ilgili kişilere iletir.
+
+Güneş enerjisiyle kendi kendini şarj edebildiği için **herhangi bir altyapıya ihtiyaç duymadan** çalışır; bu sayede uzak ve altyapısız bölgelerde de kullanılabilir. Ayrıca yaklaşık **30 dakika içinde kurulup devreye alınabilir**, yani hızlıca faaliyete geçebilir.
+
+Bunun yanında, **modüler yapısı** sayesinde iletişim ve sensör altyapısı kolayca değiştirilebilir. Dronlara gündüz kamerası, gece görüş kamerası veya termal kamera takılarak farklı görev senaryolarına uyum sağlanabilir.
+
+### 🏗️ Sistem Mimarisi
+
+```
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                           TepeGöz Gözetim Sistemi                              │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                │
+│  ┌───────────────┐    ┌──────────────────┐    ┌───────────────┐                │
+│  │  Drone A      │    │   Yer İstasyonu  │    │  Drone B      │                │
+│  │ (Devriyede)   │◄──►│                  │◄──►│ (Şarj Oluyor) │                │
+│  │               │    │  ┌─────────────┐ │    │               │                │
+│  │ • YOLOv8 AI   │    │  │Güneş Paneli │ │    │ • Beklemede   │                │
+│  │ • Canlı Yayın │    │  │             │ │    │ • Hazır       │                │
+│  │ • GPS Nav     │    │  └─────────────┘ │    │               │                │
+│  └───────┬───────┘    │  ┌─────────────┐ │    └───────┬───────┘                │
+│          │            │  │Web Arayüzü  │ │            │                        │
+│          │ Pil Düşük  │  │             │ │            │ Pil Dolu               │
+│          ▼            │  └─────────────┘ │            ▼                        │
+│  ┌───────┴───────┐    │  ┌─────────────┐ │    ┌───────┴───────┐                │
+│  │ Drone A       │    │  │ROS Merkezi  │ │    │ Drone B       │                │
+│  │ (Dönüyor)     │◄──►│  │             │ │◄──►│ (Kalkıyor)    │                │
+│  │ • Oto-İniş    │    │  └─────────────┘ │    │• Devriye Başla│                │
+│  └───────┬───────┘    └──────────────────┘    └───────┬───────┘                │
+│          │                                               │                     │
+│          │ İndi & Şarj Oluyor                           │ Şimdi Devriyede      │
+│          ▼                                               ▼                     │
+│  ┌───────┴───────┐                                ┌───────┴───────┐            │
+│  │ Drone A       │                                │ Drone B       │            │
+│  │ (Şarj Oluyor) │                                │ (Devriyede)   │            │
+│  │ • Beklemede   │                                │ • YOLOv8 AI   │            │
+│  │ • Hazır       │                                │ • Canlı Yayın │            │
+│  └───────────────┘                                └───────────────┘            │
+│                                                                                │
+│                           EL DEĞİŞTİRME TAMAMLANDI                             │
+│                                                                                │
+│  ┌─────────────────────────────────────────────────────────────────────────┐   │
+│  │                         DÖNGÜ TEKRARLANIR                               │   │
+│  │  Drone B pili düşük olduğunda → Şarj için döner                         │   │
+│  │  Drone A devriye görevini devralır                                      │   │
+│  └─────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 💻 Teknolojiler
+
+| Bileşen | Teknoloji | Amaç |
+|---------|-----------|------|
+| **İşletim Sistemi** | Ubuntu 20.04 | Kararlı Linux ortamı |
+| **Framework** | ROS1 Noetic | Robot iletişimi ve kontrol |
+| **Dil** | Python 3.8+ | Ana geliştirme |
+| **Drone Kontrolü** | DroneKit | MAVLink drone iletişimi |
+| **Yapay Zeka** | YOLOv8 (Ultralytics) | Gerçek zamanlı nesne tespiti |
+| **Web Sunucu** | Flask | REST API ve web arayüzü |
+| **Ön Yüz** | HTML5, TailwindCSS, Leaflet.js | Etkileşimli harita arayüzü |
+| **Görüntü İşleme** | OpenCV | Görüntü işleme |
 
 ### Proje Dosyaları
 
@@ -168,26 +307,65 @@ tepe_goz/
 └── ...
 ```
 
-### Kurulum ve Çalıştırma
+### 🚀 Hızlı Başlangıç
 
-  * **Ön Koşullar:** Ubuntu 20.04, ROS1 Noetic, Python 3.8.10
-  * Depoyu klonlayın:
-    ```bash
-    git clone https://github.com/koesan/TepeGoz.git
-    cd tepe_goz
-    ```
-  * Python bağımlılıklarını kurun:
-    ```bash
-    pip install -r requirements.txt
-    ```
-  * ROS ortamını kurun ve ROS core'u çalıştırın.
-  * Ana uygulamayı çalıştırın:
-    ```bash
-    python app.py
-    ```
+#### Kurulum
 
-### Ekran Görüntüleri
+```bash
+# Depoyu klonlayın
+git clone https://github.com/username/TepeGoz.git
+cd TepeGoz
 
-| Yer İstasyonu ve Web Arayüzü | Güneş Enerjili Şarj İstasyonu |
-| :---: |:---:|
-| <img src="images/web_site.png" alt="Web Arayüzü" width="600" height="400"/> | <img src="images/dron_istansoy.png" alt="Güneş Enerjili Şarj İstasyonu" width="600" height="400"/> |
+# Bağımlılıkları kurun
+pip install -r requirements.txt
+
+# TepeGöz'ü başlatın
+python app.py
+```
+
+#### Web Arayüzü
+Tarayıcınızı açın ve kontrol paneline erişmek için `http://localhost:5000` adresine gidin.
+
+### 📂 Proje Yapısı
+```
+TepeGoz/
+├── app.py                    # Ana Flask uygulaması
+├── config.py                 # Sistem yapılandırması
+├── modules/
+│   ├── camera_ai.py          # AI tespit mantığı
+│   ├── drone_manager.py      # Drone bağlantı ve kontrol
+│   ├── fire_detector.py      # Yangın tespit modülü
+│   └── mission_controller.py # Görev planlama ve yürütme
+├── models/
+│   └── fire_m.pt            # Önceden eğitilmiş YOLOv8 modeli
+├── static/                   # Web varlıkları
+├── templates/                # HTML şablonları
+└── images/                   # Dokümantasyon görselleri
+```
+
+### 🎯 Kullanım Alanları
+
+- **Orman Yangını İzleme** - Erken yangın tespiti ve alarm sistemleri
+- **Sınır Güvenliği** - Otonom çevre güvenlik gözetimi  
+- **Vahşi Yaşam Koruma** - Müdahalesiz hayvan izleme
+- **Altyapı İzleme** - Boru hattı, elektrik hattı denetimi
+- **Acil Durum Müdahalesi** - Felaket alanı değerlendirme ve izleme
+
+### 📄 Lisans
+
+Bu proje MIT Lisansı altında lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+### 👨‍💻 Geliştirici
+
+**Barış Enes Kümet**  
+- 📧 E-posta: [barisenesk72@gmail.com](mailto:barisenesk72@gmail.com)
+- 🐙 GitHub: [@koesa](https://github.com/koesan)
+
+---
+
+<div align="center">
+
+**Made with ❤️ for autonomous surveillance systems**  
+**❤️ ile otonom gözetim sistemleri için yapıldı**
+
+</div>

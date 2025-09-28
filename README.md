@@ -119,7 +119,7 @@ Moreover, thanks to its **modular design**, the communication and sensor setup c
 | **Frontend** | HTML5, TailwindCSS, Leaflet.js | Interactive mapping UI |
 | **Computer Vision** | OpenCV | Image processing |
 
-### Project Structure
+### 📂 Project Structure
 
 ```
 tepe_goz/
@@ -166,23 +166,6 @@ python app.py
 
 #### Web Interface
 Open your browser and navigate to `http://localhost:5000` to access the control panel.
-
-### 📂 Project Structure
-```
-TepeGoz/
-├── app.py                    # Main Flask application
-├── config.py                 # System configuration
-├── modules/
-│   ├── camera_ai.py          # AI detection logic
-│   ├── drone_manager.py      # Drone connection & control
-│   ├── fire_detector.py      # Fire detection module
-│   └── mission_controller.py # Mission planning & execution
-├── models/
-│   └── fire_m.pt            # Pre-trained YOLOv8 model
-├── static/                   # Web assets
-├── templates/                # HTML templates
-└── images/                   # Documentation images
-```
 
 ### 🎯 Use Cases
 
@@ -285,7 +268,7 @@ Bunun yanında, **modüler yapısı** sayesinde iletişim ve sensör altyapısı
 | **Ön Yüz** | HTML5, TailwindCSS, Leaflet.js | Etkileşimli harita arayüzü |
 | **Görüntü İşleme** | OpenCV | Görüntü işleme |
 
-### Proje Dosyaları
+### 📂 Proje Dosyaları
 
 ```
 tepe_goz/
@@ -331,23 +314,6 @@ python app.py
 
 #### Web Arayüzü
 Tarayıcınızı açın ve kontrol paneline erişmek için `http://localhost:5000` adresine gidin.
-
-### 📂 Proje Yapısı
-```
-TepeGoz/
-├── app.py                    # Ana Flask uygulaması
-├── config.py                 # Sistem yapılandırması
-├── modules/
-│   ├── camera_ai.py          # AI tespit mantığı
-│   ├── drone_manager.py      # Drone bağlantı ve kontrol
-│   ├── fire_detector.py      # Yangın tespit modülü
-│   └── mission_controller.py # Görev planlama ve yürütme
-├── models/
-│   └── fire_m.pt            # Önceden eğitilmiş YOLOv8 modeli
-├── static/                   # Web varlıkları
-├── templates/                # HTML şablonları
-└── images/                   # Dokümantasyon görselleri
-```
 
 ### 🎯 Kullanım Alanları
 

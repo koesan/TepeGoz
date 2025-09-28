@@ -16,6 +16,8 @@
 
 <img src="images/logo.png" alt="TepeGöz Logo" width="350" />
 
+---
+
 | Ground Station and Web Interface | Solar Charging Station |
 | :---: |:---:|
 | <img src="images/web_site.png" alt="Web Interface" width="600" height="400"/> | <img src="images/dron_istansoy.png" alt="Solar Charging Station" width="600" height="400"/> |

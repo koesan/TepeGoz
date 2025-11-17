@@ -4,16 +4,11 @@
 
 **⭐ If you find this project useful, give it a star! / Bu projeyi yararlı buluyorsanız yıldızlayın! ⭐**
 
-[![GitHub stars](https://img.shields.io/github/stars/username/TepeGoz?style=social)](https://github.com/username/TepeGoz)
-[![GitHub forks](https://img.shields.io/github/forks/username/TepeGoz?style=social)](https://github.com/username/TepeGoz/fork)
-
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](https://www.docker.com/)
 [![VS Code](https://img.shields.io/badge/vscode-devcontainer-green.svg)](https://code.visualstudio.com/)
 [![ROS](https://img.shields.io/badge/ros-noetic-34a853.svg)](http://wiki.ros.org/noetic)
 [![Gazebo](https://img.shields.io/badge/gazebo-11-orange.svg)](http://gazebosim.org/)
 [![ArduPilot](https://img.shields.io/badge/ardupilot-SITL-yellow.svg)](https://ardupilot.org/)
-[![MAVLink](https://img.shields.io/badge/mavlink-supported-red.svg)](https://mavlink.io/en/)
-[![MAVROS](https://img.shields.io/badge/mavros-integration-blueviolet.svg)](http://wiki.ros.org/mavros)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-5C3EE8?style=flat&logo=opencv&logoColor=white)](https://opencv.org/)
